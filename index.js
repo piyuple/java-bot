@@ -27,3 +27,14 @@ var bot = controller.spawn({
         url: 'WE_WILL_GET_TO_THIS'
     }
 }).startRTM();
+
+controller.setupWebserver(process.env.PORT, function (err, webserver) {
+    controller.createWebhookEndpoints(controller.webserver);
+    controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
+        if (err) {
+            res.status(500).send('ERROR: ' + err);
+        } else {
+            res.send('Success!');
+        }
+    });
+});
