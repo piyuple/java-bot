@@ -46,7 +46,7 @@ controller.hears('hi', 'direct_message', function (bot, message) {
 controller.on('slash_command', function (bot, message) {
     bot.replyAcknowledge();
     switch (message.command) {
-        case "\echo":
+        case "/echo":
             bot.reply(message, 'heard ya!');
             break;
 
