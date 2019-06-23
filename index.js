@@ -45,9 +45,10 @@ controller.hears('hi', 'direct_message', function (bot, message) {
 
 controller.on('slash_command', function (bot, message) {
     bot.replyAcknowledge();
+    console.log('The message was : ' + JSON.stringify(message, undefined, 4));
     switch (message.command) {
         case "/echo":
-            bot.reply(message, 'heard ya!');
+            bot.reply(message, '<@'+ message.user +'> heard ya!');
             break;
 
         default:
