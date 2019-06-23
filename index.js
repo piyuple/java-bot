@@ -5,7 +5,7 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT ||
     console.log('Error: Specify CLIENT_ID, CLIENT_SECRET, VERIFICATION_TOKEN and PORT in environment');
     process.exit(1);
 } else {
-    console.log('Good job, you have the variables!');
+    console.log('variables intact!');
 }
 
 var controller = Botkit.slackbot({
@@ -24,7 +24,7 @@ controller.configureSlackApp({
 var bot = controller.spawn({
     token: process.env.BOT_TOKEN,
     incoming_webhook: {
-        url: 'WE_WILL_GET_TO_THIS'
+        url: 'slack_webhook_url_for_a_channel'
     }
 }).startRTM();
 
