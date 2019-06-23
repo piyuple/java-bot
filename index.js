@@ -38,3 +38,19 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
         }
     });
 });
+
+controller.hears('hi', 'direct_message', function (bot, message) {
+    bot.reply(message, "Hello.");
+});
+
+controller.on('slash_command', function (bot, message) {
+    bot.replyAcknowledge();
+    switch (message.command) {
+        case "\echo":
+            bot.reply(message, 'heard ya!');
+            break;
+
+        default:
+            bot.reply(message, 'Did not recognize the command.');
+    }
+});
