@@ -45,10 +45,26 @@ controller.hears('hi', 'direct_message', function (bot, message) {
 
 controller.on('slash_command', function (bot, message) {
     bot.replyAcknowledge();
+    switch (message.command) {
+        case "/echo":
+<<<<<<< HEAD
+            bot.reply(message, '<@'+ message.user +'> heard ya! Your message was ' + message.text);
+            break;
+
+        default:
+            bot.reply(message, 'Did not recognize the command.');
+    }
+});
+
+controller.on('direct_mention', function (bot, message) {
+    bot.replyAcknowledge();
     console.log('The message was : ' + JSON.stringify(message, undefined, 4));
     switch (message.command) {
         case "/echo":
-            bot.reply(message, '<@'+ message.user +'> heard ya!');
+            bot.reply(message, 'hey <@'+ message.user +'> heard ya! Your message was ' + message.text);
+=======
+            bot.reply(message, 'heard ya!');
+>>>>>>> parent of 51b291e... added mentions
             break;
 
         default:
