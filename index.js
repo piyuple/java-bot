@@ -47,7 +47,6 @@ controller.on('slash_command', function (bot, message) {
     bot.replyAcknowledge();
     switch (message.command) {
         case "/echo":
-<<<<<<< HEAD
             bot.reply(message, '<@'+ message.user +'> heard ya! Your message was ' + message.text);
             break;
 
@@ -56,15 +55,14 @@ controller.on('slash_command', function (bot, message) {
     }
 });
 
+
+// for testing the external APIs
 controller.on('direct_mention', function (bot, message) {
     bot.replyAcknowledge();
     console.log('The message was : ' + JSON.stringify(message, undefined, 4));
     switch (message.command) {
         case "/echo":
             bot.reply(message, 'hey <@'+ message.user +'> heard ya! Your message was ' + message.text);
-=======
-            bot.reply(message, 'heard ya!');
->>>>>>> parent of 51b291e... added mentions
             break;
 
         default:
