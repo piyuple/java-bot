@@ -40,18 +40,24 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
 });
 
 controller.hears('hi', 'direct_message', function (bot, message) {
-    bot.reply(message, "Hello.");
+    bot.reply(message, "Hello!");
 });
 
+// commands
 controller.on('slash_command', function (bot, message) {
-    bot.replyAcknowledge();
+    bot.replyAcknowledge(); // for 3000 ms limit
     switch (message.command) {
         case "/echo":
-            bot.reply(message, '<@'+ message.user +'> heard ya! Your message was ' + message.text);
+            bot.reply(message, '<@'+ message.user +'> heard ya!\nYour message was: ' + message.text);
             break;
 
+        case "/java":
+            // compilation logic through external API
+            break;
+
+
         default:
-            bot.reply(message, 'Did not recognize the command.');
+            bot.reply(message, 'I don\'t think I can help you with that.');
     }
 });
 
@@ -60,12 +66,17 @@ controller.on('slash_command', function (bot, message) {
 controller.on('direct_mention', function (bot, message) {
     bot.replyAcknowledge();
     console.log('The message was : ' + JSON.stringify(message, undefined, 4));
-    switch (message.command) {
-        case "/echo":
-            bot.reply(message, 'hey <@'+ message.user +'> heard ya! Your message was ' + message.text);
+    switch (message.text) {
+        case "hi":
+        case "hello":
+            bot.reply(message, 'hey <@'+ message.user + '>! Hope you\'re doing great today.\nYou can compile java code using the command: \\java <source_code>');
+            break;
+
+        case "help":
+            bot.reply(message, 'hey <@'+ message.user +'>!\nIn case you have any trouble understanding code, contact <@piyuple>.');
             break;
 
         default:
-            bot.reply(message, 'Did not recognize the command.');
+            bot.reply(message, 'I don\'t understand English much.\nUnderstand Java though!\nPlease use the command \\java <source_code> to talk java.');
     }
 });
