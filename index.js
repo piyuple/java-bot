@@ -1,4 +1,5 @@
 var Botkit = require('botkit');
+var request = require('request');
 require('dotenv').config();
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT || !process.env.VERIFICATION_TOKEN) {
@@ -7,6 +8,20 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT ||
 } else {
     console.log('variables intact!');
 }
+
+// payload for external API
+var options = {
+    method: 'POST',
+    uri: process.env.SUBMISSION_URI,
+    json: {
+        source_code: "",
+        language_id: process.env.LANGUAGE_ID,
+        stdin: ""
+    },
+    headers: {
+        'Content-type': 'application/json'
+    }
+}, token = null, result = null;
 
 var controller = Botkit.slackbot({
     json_file_store: './db_slackbutton_slash_command/',
@@ -39,6 +54,50 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
     });
 });
 
+// sending payload
+// will send message to this function or modify 'options'
+function callAPI() {
+    console.log("calling external API");
+    request(options, function (error, response, body) {
+        console.log("response received");
+
+        // status 201 is submission successful
+        if (!error && response.statusCode == 201) {
+            token = body.token;
+            console.log(body); // API response.
+
+            // querying the token received
+            getSub();
+
+        } else {
+            console.log("DURING CALLING EXTERNAL API FOR TOKEN");
+            console.log("Error: " + error + "\nResponse: " + JSON.stringify(response));
+        }
+    });
+}
+
+// querying external API with token
+function getSub(valid, bot, message) {
+    console.log("querying external API with token");
+    request(options.uri + "/" + token, function (err, res, bdy) {
+            console.log("response received");
+            if (!err && res.statusCode == 200) {
+                result = JSON.parse(bdy);
+                // will need to bot.reply with the result
+                // for bot.reply()
+                if (valid)
+                    bot.reply(message, 'Output: \n' + result.stdout);
+                else
+                    console.log("body:\n" + bdy);
+
+            } else {
+                console.log("DURING QUERYING EXTERNAL API WITH TOKEN");
+                console.log("Error: " + err + "\nResponse: " + JSON.stringify(res));
+            }
+        });
+}
+
+
 controller.hears('hi', 'direct_message', function (bot, message) {
     bot.reply(message, "Hello!");
 });
@@ -53,6 +112,21 @@ controller.on('slash_command', function (bot, message) {
 
         case "/java":
             // compilation logic through external API
+
+            // updating source
+            options.json.source_code = message.text;
+            bot.reply(message, '<@' + message.user + '>!\nSource:\n' + message.text);
+            // will be implementing stdin later
+
+            callAPI();
+            setTimeout(getSub, 15000, true, bot, message);
+            bot = controller.spawn({
+                    token: process.env.BOT_TOKEN,
+                    incoming_webhook: {
+                    url: 'slack_webhook_url_for_a_channel'
+                }
+            }).startRTM();
+
             break;
 
 
