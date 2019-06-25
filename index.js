@@ -55,7 +55,6 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
 });
 
 // sending payload
-// will send message to this function or modify 'options'
 function callAPI() {
     console.log("calling external API");
     request(options, function (error, response, body) {
