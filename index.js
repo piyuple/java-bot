@@ -82,8 +82,8 @@ function getSub(valid, bot, message) {
             console.log("response received");
             if (!err && res.statusCode == 200) {
                 result = JSON.parse(bdy);
+
                 // will need to bot.reply with the result
-                // for bot.reply()
                 if (valid)
                     bot.reply(message, 'Output: \n' + result.stdout);
                 else
@@ -110,24 +110,13 @@ controller.on('slash_command', function (bot, message) {
             break;
 
         case "/java":
-            // compilation logic through external API
-
-            // updating source
             options.json.source_code = message.text;
             bot.reply(message, '<@' + message.user + '>!\nSource:\n' + message.text);
             // will be implementing stdin later
 
             callAPI();
             setTimeout(getSub, 15000, true, bot, message);
-            /*bot = controller.spawn({
-                    token: process.env.BOT_TOKEN,
-                    incoming_webhook: {
-                    url: 'slack_webhook_url_for_a_channel'
-                }
-            }).startRTM();
-            */
             break;
-
 
         default:
             bot.reply(message, 'I don\'t think I can help you with that.');
