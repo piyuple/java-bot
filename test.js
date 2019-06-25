@@ -1,5 +1,5 @@
 var request = require('request');
-require('dotenv').config(); // for SUBMISSION_URI
+require('dotenv').config();
 
 var options = {
     method: 'POST',
@@ -16,18 +16,17 @@ var options = {
 
 console.log("source: \n" + options.json.source_code);
 
-// sending payload
+
 function callAPI() {
     console.log("calling external API");
     request(options, function (error, response, body) {
         console.log("response received");
 
-        // status 201 is submission successful
+
         if (!error && response.statusCode == 201) {
             token = body.token;
-            console.log(body); // API response.
+            console.log(body);
 
-            // querying the token received
             getSub();
 
         } else {
@@ -37,15 +36,14 @@ function callAPI() {
     });
 }
 
-// querying external API with token
+
 function getSub(msg) {
     console.log("querying external API with token");
     request(options.uri + "/" + token, function (err, res, bdy) {
             console.log("response received");
             if (!err && res.statusCode == 200) {
                 result = JSON.parse(bdy);
-                // will need to bot.reply with the result
-                // for bot.reply()
+
                 if (msg)
                     console.log("output: \n" + result.stdout);
                 else

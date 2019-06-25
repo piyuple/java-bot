@@ -123,7 +123,7 @@ controller.on('slash_command', function (bot, message) {
             // stdin later
 
             callAPI();
-            setTimeout(getSub, 15000, true, bot, message);
+            setTimeout(getSub, 6000, true, bot, message);
             break;
 
         default:
@@ -149,3 +149,5 @@ controller.on('direct_mention', function (bot, message) {
             bot.reply(message, 'I don\'t understand English much.\nUnderstand Java though!\nPlease use the command \\java <source_code> to talk java.');
     }
 });
+
+// added input with /input command
