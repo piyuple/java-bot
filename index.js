@@ -2,6 +2,7 @@ var Botkit = require('botkit');
 var request = require('request');
 require('dotenv').config();
 
+
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT || !process.env.VERIFICATION_TOKEN) {
     console.log('Error: Specify CLIENT_ID, CLIENT_SECRET, VERIFICATION_TOKEN and PORT in environment');
     process.exit(1);
@@ -9,7 +10,7 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT ||
     console.log('variables intact!');
 }
 
-// payload for external API
+
 var options = {
     method: 'POST',
     uri: process.env.SUBMISSION_URI,
@@ -23,11 +24,13 @@ var options = {
     }
 }, token = null, result = null;
 
+
 var controller = Botkit.slackbot({
     json_file_store: './db_slackbutton_slash_command/',
     debug: true,
     clientSigningSecret: process.env.CLIENT_SIGNING_SECRET
 });
+
 
 controller.configureSlackApp({
     clientId: process.env.CLIENT_ID,
@@ -36,12 +39,14 @@ controller.configureSlackApp({
     scopes: ['commands', 'bot']
 });
 
+
 var bot = controller.spawn({
     token: process.env.BOT_TOKEN,
     incoming_webhook: {
         url: 'slack_webhook_url_for_a_channel'
     }
 }).startRTM();
+
 
 controller.setupWebserver(process.env.PORT, function (err, webserver) {
     controller.createWebhookEndpoints(controller.webserver);
@@ -54,18 +59,16 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
     });
 });
 
-// sending payload
+
 function callAPI() {
     console.log("calling external API");
     request(options, function (error, response, body) {
         console.log("response received");
 
-        // status 201 is submission successful
         if (!error && response.statusCode == 201) {
             token = body.token;
-            console.log(body); // API response.
+            console.log(body);
 
-            // querying the token received
             getSub();
 
         } else {
@@ -75,7 +78,7 @@ function callAPI() {
     });
 }
 
-// querying external API with token
+
 function getSub(valid, bot, message) {
     console.log("querying external API with token");
     request(options.uri + "/" + token, function (err, res, bdy) {
@@ -83,9 +86,14 @@ function getSub(valid, bot, message) {
             if (!err && res.statusCode == 200) {
                 result = JSON.parse(bdy);
 
-                // will need to bot.reply with the result
-                if (valid)
-                    bot.reply(message, 'Output: \n' + result.stdout);
+                if (valid) {
+                    if(result.status.id < 3)
+                        setTimeout(getSub, 2000, true, bot, message);
+                    else if (result.status.id > 3)
+                        bot.reply(message, 'Status: ' + result.status.description + '\nCompiler output: \n' + result.compile_output);
+                    else
+                        bot.reply(message, 'Status: ' + result.status.description + '\nOutput: \n' + result.stdout + 'time: ' + result.time + 's\nmemory: ' + result.memory + 'kB');
+                }
                 else
                     console.log("body:\n" + bdy);
 
@@ -101,9 +109,9 @@ controller.hears('hi', 'direct_message', function (bot, message) {
     bot.reply(message, "Hello!");
 });
 
-// commands
+
 controller.on('slash_command', function (bot, message) {
-    bot.replyAcknowledge(); // for 3000 ms limit
+    bot.replyAcknowledge();
     switch (message.command) {
         case "/echo":
             bot.reply(message, '<@'+ message.user +'> heard ya!\nYour message was: ' + message.text);
@@ -112,7 +120,7 @@ controller.on('slash_command', function (bot, message) {
         case "/java":
             options.json.source_code = message.text;
             bot.reply(message, '<@' + message.user + '>!\nSource:\n' + message.text);
-            // will be implementing stdin later
+            // stdin later
 
             callAPI();
             setTimeout(getSub, 15000, true, bot, message);
@@ -124,7 +132,6 @@ controller.on('slash_command', function (bot, message) {
 });
 
 
-// for testing the external APIs
 controller.on('direct_mention', function (bot, message) {
     bot.replyAcknowledge();
     console.log('The message was : ' + JSON.stringify(message, undefined, 4));
