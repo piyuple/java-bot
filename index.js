@@ -119,13 +119,13 @@ controller.on('slash_command', function (bot, message) {
 
             callAPI();
             setTimeout(getSub, 15000, true, bot, message);
-            bot = controller.spawn({
+            /*bot = controller.spawn({
                     token: process.env.BOT_TOKEN,
                     incoming_webhook: {
                     url: 'slack_webhook_url_for_a_channel'
                 }
             }).startRTM();
-
+            */
             break;
 
 
