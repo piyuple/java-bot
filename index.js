@@ -97,7 +97,7 @@ function getSub(valid, bot, message) {
                     if(result.status.id < 3)
                         setTimeout(getSub, 2000, true, bot, message);
                     else
-                        bot.reply(message, '*status:* ' + result.status.description + (result.stdout ? '\n*output:* ' + result.stdout : '') + (result.time ? '\n*time:* ' + result.time + 's' : '') + (result.memory ? '\n*memory:* ' + result.memory + 'kB' : '') + (result.stderr ? '\n*stderr:* \n' + result.stderr : '') + (result.compile_output ? '\n*Compile output:* \n' + result.compile_output : '') + (result.message ? '\n*Message:* ' + result.message : ''));
+                        bot.reply(message, '*status:* ' + result.status.description + (result.stdout ? '\n*output:* \n' + result.stdout : '') + (result.time ? '\n*time:* ' + result.time + 's' : '') + (result.memory ? '\n*memory:* ' + result.memory + 'kB' : '') + (result.stderr ? '\n*stderr:* \n' + result.stderr : '') + (result.compile_output ? '\n*Compile output:* \n' + result.compile_output : '') + (result.message ? '\n*Message:* ' + result.message : ''));
                 }
                 else
                     console.log("body:\n" + bdy);
