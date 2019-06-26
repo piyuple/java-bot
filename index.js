@@ -128,7 +128,7 @@ controller.on('slash_command', function (bot, message) {
             // stdin later
 
             callAPI();
-            setTimeout(getSub, 5000, true, bot, message);
+            setTimeout(getSub, 2000, true, bot, message);
             break;
 
         default:
