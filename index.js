@@ -65,6 +65,7 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
 
 function callAPI() {
     console.log("calling external API");
+
     request(options, function (error, response, body) {
         console.log("response received");
 
@@ -84,15 +85,18 @@ function callAPI() {
 
 function getSub(valid, bot, message) {
     console.log("querying external API with token");
+
     request(options.uri + "/" + token, function (err, res, bdy) {
             console.log("response received");
+
             if (!err && res.statusCode == 200) {
                 result = JSON.parse(bdy);
-                console.log("status:" + result.status.id);
+                console.log("API status: " + result.status.id);
+
                 if (valid) {
                     if(result.status.id < 3)
                         setTimeout(getSub, 2000, true, bot, message);
-                    else if (result.status.id > 3)
+                    else
                         bot.reply(message, '*status:* ' + result.status.description + (result.stdout ? '\n*output:* ' + result.stdout : '') + (result.time ? '\n*time:* ' + result.time + 's' : '') + (result.memory ? '\n*memory:* ' + result.memory + 'kB' : '') + (result.stderr ? '\n*stderr:* \n' + result.stderr : '') + (result.compile_output ? '\n*Compile output:* \n' + result.compile_output : '') + (result.message ? '\n*Message:* ' + result.message : ''));
                 }
                 else
