@@ -124,7 +124,7 @@ controller.on('slash_command', function (bot, message) {
 
         case "/java":
             options.json.source_code = message.text;
-            bot.reply(message, '<@' + message.user + '>!\n:java: Source:\n' + message.text);
+            bot.reply(message, '<@' + message.user + '>!\n:java: *Source:*\n' + message.text);
             // stdin later
 
             callAPI();
