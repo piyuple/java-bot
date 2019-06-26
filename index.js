@@ -17,7 +17,10 @@ var options = {
     json: {
         source_code: "",
         language_id: process.env.LANGUAGE_ID,
-        stdin: ""
+        stdin: "",
+        cpu_time_limit: process.env.CPU_TIME_LIMIT,
+        max_file_size: process.env.MAX_FILE_SIZE,
+        memory_limit: process.env.MEMORY_LIMIT
     },
     headers: {
         'Content-type': 'application/json'
@@ -90,9 +93,7 @@ function getSub(valid, bot, message) {
                     if(result.status.id < 3)
                         setTimeout(getSub, 2000, true, bot, message);
                     else if (result.status.id > 3)
-                        bot.reply(message, 'Status: ' + result.status.description + '\nCompiler output: \n' + result.compile_output);
-                    else
-                        bot.reply(message, 'Status: ' + result.status.description + '\nOutput: \n' + result.stdout + 'time: ' + result.time + 's\nmemory: ' + result.memory + 'kB');
+                        bot.reply(message, '*status:* ' + result.status.description + ((result.stdout) ? '\n*output:* ' + result.stdout : '') + ((result.time) ? '\n*time:* ' + result.time + 's' : '') + ((result.memory) ? '\n*memory:* ' + result.memory + 'kB' : '') + ((result.stderr) ? '\n*stderr:* \n' + result.stderr : '') + ((result.compile_output) ? '\n*Compile output:* \n' + result.compile_output : '') + ((result.message) ? '\n*Message:* ' + result.message : ''));
                 }
                 else
                     console.log("body:\n" + bdy);
@@ -119,11 +120,11 @@ controller.on('slash_command', function (bot, message) {
 
         case "/java":
             options.json.source_code = message.text;
-            bot.reply(message, '<@' + message.user + '>!\nSource:\n' + message.text);
+            bot.reply(message, '<@' + message.user + '>!\n:java: Source:\n' + message.text);
             // stdin later
 
             callAPI();
-            setTimeout(getSub, 6000, true, bot, message);
+            setTimeout(getSub, 5000, true, bot, message);
             break;
 
         default:
