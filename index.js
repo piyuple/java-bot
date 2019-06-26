@@ -86,7 +86,6 @@ function getSub(valid, bot, message) {
     console.log("querying external API with token");
     request(options.uri + "/" + token, function (err, res, bdy) {
             console.log("response received");
-            console.log("status:" + result.status.id);
             if (!err && res.statusCode == 200) {
                 result = JSON.parse(bdy);
                 console.log("status:" + result.status.id);
